@@ -2,6 +2,11 @@ package jcmendonca.tetris;
 
 import java.util.Random;
 
+import javax.media.opengl.GL;
+import javax.media.opengl.glu.GLU;
+
+import com.sun.opengl.util.GLUT;
+
 public class Tetris {
 
 	private Tabuleiro tabuleiro;
@@ -73,5 +78,32 @@ public class Tetris {
 			setPecaAtual(proximaPeca);
 			atualizaProximaPeca();
 		}
+	}
+
+	public void desenhar(GL gl, GLU glu, GLUT glut) {
+
+		float[] corGrade = new float[] { 0.7f, 0.7f, 0.7f };
+
+		gl.glMaterialfv(GL.GL_FRONT, GL.GL_AMBIENT_AND_DIFFUSE, corGrade, 0);
+		gl.glEnable(GL.GL_LIGHTING);
+
+		gl.glPushMatrix();
+		gl.glScalef(15, 30, 5);
+		//		gl.glRotatef(45, 0, 1, 0);
+		glut.glutWireCube(1.0f);
+		gl.glPopMatrix();
+		gl.glDisable(GL.GL_LIGHTING);
+
+		gl.glMaterialfv(GL.GL_FRONT, GL.GL_AMBIENT_AND_DIFFUSE, new float[] { 1f, 0, 0 }, 0);
+		gl.glEnable(GL.GL_LIGHTING);
+
+		gl.glPushMatrix();
+		gl.glTranslated(2.0f, 0.0f, 0f);
+		glut.glutSolidCube(1.0f);
+		gl.glPopMatrix();
+
+		gl.glDisable(GL.GL_LIGHTING);
+
+
 	}
 }

@@ -14,7 +14,7 @@ public class Frame extends JFrame{
 	public Frame() {		
 		// Cria o frame.
 		super("CG-N3_Trasnformacao");   
-		setBounds(50,100,500,500); 
+		setBounds(50, 100, 400, 600);
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		getContentPane().setLayout(new BorderLayout());
 
@@ -38,7 +38,9 @@ public class Frame extends JFrame{
 	}		
 	
 	public static void main(String[] args) {
-		new Frame().setVisible(true);
+		Frame frame = new Frame();
+		frame.setVisible(true);
+		frame.renderer.iniciaJogo();
 	}
 
 	

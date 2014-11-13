@@ -1,8 +1,11 @@
 package jcmendonca.tetris;
+
+import jcmendonca.common.Point;
+
 /**
- * Representa uma câmera do espaço gráfico
+ * Representa uma cï¿½mera do espaï¿½o grï¿½fico
  * 
- * @author Janaina C Mendonça Lima
+ * @author Janaina C Mendonï¿½a Lima
  * 
  */
 public class Camera {
@@ -11,6 +14,10 @@ public class Camera {
 	private float maxX;
 	private float minY;
 	private float maxY;
+
+	private Point eye;
+	private Point center;
+	private Point up = new Point(0, 1, 0);
 
 	public Camera() {
 		super();
@@ -56,4 +63,23 @@ public class Camera {
 		this.maxY = maxY;
 	}
 
+	public Point getEye() {
+		return eye;
+	}
+
+	public void setEye(Point eye) {
+		this.eye = eye;
+	}
+
+	public Point getCenter() {
+		return center;
+	}
+
+	public void setCenter(Point center) {
+		this.center = center;
+	}
+
+	public Point getUp() {
+		return up;
+	}
 }

@@ -1,4 +1,5 @@
 package jcmendonca.tetris;
+
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -8,87 +9,112 @@ import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLEventListener;
 import javax.media.opengl.glu.GLU;
 
+import jcmendonca.common.Point;
+
+import com.sun.opengl.util.GLUT;
+
 public class Main implements GLEventListener, KeyListener {
+
+	/**/
 	private GL gl;
 	private GLU glu;
+	private GLUT glut;
 	private GLAutoDrawable glDrawable;
-	private int primitive;
-	private boolean stopMoveVertex;
 
-	// "render" feito logo apos a inicializacao do contexto OpenGL.
+	/**/
+
+	private Tetris tetris = new Tetris();
+	private Camera camera;
+
 	public void init(GLAutoDrawable drawable) {
-		System.out.println(" --- init ---");
 		glDrawable = drawable;
 		gl = drawable.getGL();
 		glu = new GLU();
+		glut = new GLUT();
 		glDrawable.setGL(new DebugGL(gl));
 
-		gl.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+		gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
+		camera = new Camera(-200.0f, 200.0f, -300.0f, 300.0f);
+		camera.setEye(new Point(20, 20, 20));
+		camera.setCenter(new Point());
 
-		// ----------------------
+		float posLight[] = { 5.0f, 5.0f, 10.0f, 0.0f };
+		gl.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION, posLight, 0);
+		gl.glEnable(GL.GL_LIGHT0);
 
-		// Polygon polygon = new Polygon(new Point(54, 183));
-		// polygon.addPoint(new Point(72, 9));
-		// polygon.addPoint(new Point(83, 115));
-		// polygon.addPoint(new Point(233, 139));
-		// world.addPolygon(polygon);
-		
-		// polygon = new Polygon(new Point(-50, 50));
-		// polygon.addPoint(new Point(-100, 150));
-		// polygon.addPoint(new Point(-200, 20));
-		// polygon.addPoint(new Point(-100, 20));
-		// polygon.addPoint(new Point(-150, 50));
-		// world.addPolygon(polygon);
-
+		gl.glEnable(GL.GL_CULL_FACE);
+		gl.glEnable(GL.GL_DEPTH_TEST);
 	}
 
-	// metodo definido na interface GLEventListener.
-	// "render" feito pelo cliente OpenGL.
-	public void display(GLAutoDrawable arg0) {
+	public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
+		gl.glViewport(0, 0, width, height);
+		gl.glMatrixMode(GL.GL_PROJECTION);
+		gl.glLoadIdentity();
+		glu.gluPerspective(60, 1, 0.1, 100);
+	}
+
+	public void display(GLAutoDrawable drawable) {
 		System.out.println("Desenhando...");
-		gl.glClear(GL.GL_COLOR_BUFFER_BIT);
+		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 		gl.glMatrixMode(GL.GL_MODELVIEW);
 		gl.glLoadIdentity();
 
-		// configurar window
-		Camera camera = new Camera(-250.0f, 250.0f, -250.0f, 250.0f);
-		glu.gluOrtho2D(camera.getMinX(), camera.getMaxX(), camera.getMinY(),
-				camera.getMaxY());
+		// configurar camera
 
-		displaySRU();
+		Point eye = camera.getEye();
+		Point center = camera.getCenter();
+		Point up = camera.getUp();
 
-		Tabuleiro tabuleiro = new Tabuleiro();
-		
-		tabuleiro.desenhar(gl);
-		
+		glu.gluLookAt(eye.getX(), eye.getY(), eye.getZ(), center.getX(), center.getY(), center.getZ(), up.getX(), up.getY(), up.getZ());
+
+		drawAxis();
+
+		tetris.desenhar(gl, glu, glut);
 
 		gl.glFlush();
 		System.out.println("Fim desenho...");
 	}
 
-	public void displaySRU() {
+	public void drawAxis() {
+		// eixo X - Red
 		gl.glColor3f(1.0f, 0.0f, 0.0f);
 		gl.glBegin(GL.GL_LINES);
-		gl.glVertex2f(-200.0f, 0.0f);
-		gl.glVertex2f(200.0f, 0.0f);
+		gl.glVertex3f(0.0f, 0.0f, 0.0f);
+		gl.glVertex3f(10.0f, 0.0f, 0.0f);
 		gl.glEnd();
+		// eixo Y - Green
 		gl.glColor3f(0.0f, 1.0f, 0.0f);
 		gl.glBegin(GL.GL_LINES);
-		gl.glVertex2f(0.0f, -200.0f);
-		gl.glVertex2f(0.0f, 200.0f);
+		gl.glVertex3f(0.0f, 0.0f, 0.0f);
+		gl.glVertex3f(0.0f, 10.0f, 0.0f);
 		gl.glEnd();
+		// eixo Z - Blue
+		gl.glColor3f(0.0f, 0.0f, 1.0f);
+		gl.glBegin(GL.GL_LINES);
+		gl.glVertex3f(0.0f, 0.0f, 0.0f);
+		gl.glVertex3f(0.0f, 0.0f, 10.0f);
+		gl.glEnd();
+	}
+
+	public void iniciaJogo() {
+
 	}
 
 	public void keyPressed(KeyEvent e) {
-		
-	}
+		switch (e.getKeyCode()) {
 
-
-	// metodo definido na interface GLEventListener.
-	// "render" feito depois que a janela foi redimensionada.
-	public void reshape(GLAutoDrawable arg0, int arg1, int arg2, int arg3,
-			int arg4) {
+		case KeyEvent.VK_ESCAPE:
+			System.exit(1);
+			break;
+		case KeyEvent.VK_1:
+			camera.setEye(new Point(20, 20, 20));
+			break;
+		case KeyEvent.VK_2:
+			camera.setEye(new Point(0, 0, 20));
+			break;
+		}
+		glDrawable.display();
 	}
 
 	// metodo definido na interface GLEventListener.
@@ -99,11 +125,8 @@ public class Main implements GLEventListener, KeyListener {
 	}
 
 	/*
-	 * Métodos não implementados
+	 * Mï¿½todos nï¿½o implementados
 	 */
-
-
-
 
 	public void keyReleased(KeyEvent arg0) {
 		// System.out.println(" --- keyReleased ---");

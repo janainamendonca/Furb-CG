@@ -44,7 +44,7 @@ public class Main implements GLEventListener, KeyListener {
 	private IntBuffer idsTextura;
 
 	/**/
-	private Tetris tetris = new Tetris();
+	Tetris tetris = new Tetris();
 	private Camera camera;
 
 	public void init(GLAutoDrawable drawable) {
@@ -126,6 +126,13 @@ public class Main implements GLEventListener, KeyListener {
 		glu.gluPerspective(60, 1, 0.1, 100);
 	}
 
+	public void display() {
+		if (glDrawable != null) {
+
+			glDrawable.display();
+		}
+	}
+
 	public void display(GLAutoDrawable drawable) {
 		System.out.println("Desenhando...");
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
@@ -171,7 +178,7 @@ public class Main implements GLEventListener, KeyListener {
 	}
 
 	public void iniciaJogo() {
-
+		tetris.iniciarJogo(this);
 	}
 
 	public void keyPressed(KeyEvent e) {

@@ -1,8 +1,6 @@
 package jcmendonca.tetris;
 
 import java.awt.BorderLayout;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 import javax.media.opengl.GLCanvas;
 import javax.media.opengl.GLCapabilities;
@@ -39,27 +37,27 @@ public class Frame extends JFrame {
 		GLCanvas canvas = new GLCanvas(glCaps);
 		add(canvas, BorderLayout.CENTER);
 		canvas.addGLEventListener(renderer);
-		canvas.addKeyListener(renderer);
+		canvas.addKeyListener(renderer.tetris);
 		canvas.requestFocus();
 
-		animator = new Animator(canvas);
-
-		addWindowListener(new WindowAdapter() {
-			public void windowClosing(WindowEvent e) {
-				new Thread(new Runnable() {
-					public void run() {
-						animator.stop();
-					}
-				}).start();
-			}
-		});
+		//		animator = new Animator(canvas);
+		//
+		//		addWindowListener(new WindowAdapter() {
+		//			public void windowClosing(WindowEvent e) {
+		//				new Thread(new Runnable() {
+		//					public void run() {
+		//						animator.stop();
+		//					}
+		//				}).start();
+		//			}
+		//		});
 
 	}
 
 	public static void main(String[] args) {
 		Frame frame = new Frame();
 		frame.setVisible(true);
-		frame.animator.start();
+		//		frame.animator.start();
 		frame.renderer.iniciaJogo();
 	}
 

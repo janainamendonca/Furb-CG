@@ -1,5 +1,7 @@
 package jcmendonca.tetris;
 
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.nio.IntBuffer;
 import java.util.Random;
 
@@ -10,7 +12,7 @@ import jcmendonca.common.Transform;
 
 import com.sun.opengl.util.GLUT;
 
-public class Tetris {
+public class Tetris implements KeyListener {
 
 	private Tabuleiro tabuleiro;
 
@@ -23,6 +25,25 @@ public class Tetris {
 	private int linhaAtual;
 
 	private int colunaAtual;
+
+	private Main main;
+
+	private float velocidadeJogo;
+
+	private jcmendonca.tetris.Clock logicTimer;
+
+	private int nivel;
+
+	private int pontos;
+
+	private boolean isNovoJogo;
+
+	private boolean isGameOver;
+
+	/**
+	 * The number of milliseconds per frame.
+	 */
+	private static final long FRAME_TIME = 1000L / 50L;
 
 	public Tetris() {
 
@@ -52,10 +73,89 @@ public class Tetris {
 		//		};
 		//
 		//		this.tabuleiro = new Tabuleiro(matrizTabuleiro);
+		tabuleiro = new Tabuleiro();
 
-		this.tabuleiro = new Tabuleiro();
+	}
 
+	public void iniciarJogo(Main main) {
+		this.main = main;
 		random = new Random();
+		isNovoJogo = true;
+		//		this.tabuleiro = new Tabuleiro();
+		this.velocidadeJogo = 1.0f;
+
+		// Timer do jogo, fica pausado até o usuário pressionar enter
+		this.logicTimer = new Clock(velocidadeJogo);
+		logicTimer.setPaused(true);
+
+		while (true) {
+			long inicio = System.nanoTime();
+
+			// atualiza o tempo
+			logicTimer.update();
+
+			// se passou o tempo da velocidade do jogo, a peça atual pode ser movida para baixo.
+			if (logicTimer.hasElapsedCycle()) {
+				atualizarJogo();
+				main.display();
+			}
+
+
+			/*
+			 * Sleep to cap the framerate.
+			 */
+			long delta = (System.nanoTime() - inicio) / 1000000L;
+			if (delta < FRAME_TIME) {
+				try {
+					Thread.sleep(FRAME_TIME - delta);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+
+		}
+	}
+
+	private void atualizarJogo() {
+		moveAbaixo();
+		System.out.println("move abaixo");
+	}
+
+	private void resetGame() {
+		this.nivel = 1;
+		this.pontos = 0;
+		this.velocidadeJogo = 1.0f;
+		atualizaProximaPeca();
+		this.isNovoJogo = false;
+		this.isGameOver = false;
+		tabuleiro = new Tabuleiro();
+		logicTimer.reset();
+		logicTimer.setCyclesPerSecond(velocidadeJogo);
+
+		linhaAtual = 0;
+		colunaAtual = 4;
+
+		insereNovaPeca();
+	}
+
+	public void insereNovaPeca() {
+		linhaAtual = 0;
+		colunaAtual = 4;
+
+		setPecaAtual(proximaPeca);
+		atualizaProximaPeca();
+
+		if (!tabuleiro.cabePeca(pecaAtual, linhaAtual, colunaAtual)) {
+			//game over
+			//TODO tratar
+			logicTimer.setPaused(true);
+			System.out.println("Game over");
+		} else {
+			System.out.println("nova peça");
+			tabuleiro.colocaPeca(pecaAtual, linhaAtual, colunaAtual);
+
+		}
+
 	}
 
 	public Peca getPecaAtual() {
@@ -107,8 +207,15 @@ public class Tetris {
 		boolean colisao = tabuleiro.colocaPeca(pecaAtual, linhaAtual, colunaAtual);
 
 		if (colisao) {
-			setPecaAtual(proximaPeca);
-			atualizaProximaPeca();
+
+			System.out.println("Colisão");
+
+			this.velocidadeJogo += 0.035f;
+			logicTimer.setCyclesPerSecond(velocidadeJogo);
+
+			logicTimer.reset();
+
+			insereNovaPeca();
 		}
 	}
 
@@ -324,6 +431,44 @@ public class Tetris {
 				}
 			}
 		}
+
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		switch (e.getKeyCode()) {
+		case KeyEvent.VK_ENTER:
+
+			if (isGameOver || isNovoJogo) {
+				resetGame();
+			}
+			break;
+
+		case KeyEvent.VK_LEFT:
+			moveEsquerda();
+			break;
+
+		case KeyEvent.VK_RIGHT:
+			moveDireita();
+			break;
+
+		case KeyEvent.VK_UP:
+			rotaciona();
+			break;
+		case KeyEvent.VK_DOWN:
+			moveAbaixo();
+		default:
+			break;
+		}
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
 
 	}
 

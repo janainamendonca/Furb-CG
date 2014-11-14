@@ -9,6 +9,7 @@ public class Peca {
 
 	public Peca(TipoPeca tipoPeca) {
 		matrizAtual = new Matrix(tipoPeca.getMatriz()).getArrayCopy();
+		this.tipoPeca = tipoPeca;
 	}
 
 	public TipoPeca getTipoPeca() {

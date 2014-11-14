@@ -27,12 +27,17 @@ public class Tabuleiro {
 	}
 
 	public boolean cabePeca(double[][] matrizPeca, int linha, int coluna) {
+
+		if (linha < 0 || coluna < 0) {
+			return false;
+		}
+
 		for (int i = 0; i < matrizPeca.length; i++) {
 			for (int j = 0; j < matrizPeca[0].length; j++) {
 
 				if (matrizPeca[i][j] != 0) {
 
-					if ((i + linha >= qtdLinhas) || (j + coluna) >= qtdColunas || tabuleiro[i + linha][j + coluna] != 0) {
+					if ((i + linha >= qtdLinhas) || (j + coluna) >= qtdColunas || tabuleiro[i + linha][j + coluna] > 0) {
 						return false;
 					}
 
@@ -53,13 +58,13 @@ public class Tabuleiro {
 
 				if (matrizPeca[i][j] != 0) {
 
-					tabuleiro[i + linha][j + coluna] = matrizPeca[i][j];
+					tabuleiro[i + linha][j + coluna] = -1;
 
-					if (i == matrizPeca.length - 1) {
+					if (linha + i == qtdLinhas - 1) {
 						colisao = true; //parou na ultima linha
 					} else {
 
-						if (matrizPeca[i + 1][j] != 0) {
+						if (tabuleiro[i + linha + 1][j] != 0) {
 							colisao = true; //parou 
 						}
 

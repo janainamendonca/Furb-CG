@@ -10,7 +10,7 @@ public class Tabuleiro {
 	private int linhasPreenchidas = 0;
 
 	public Tabuleiro() {
-		this(new double[20][9]);
+		this(new double[20][10]);
 	}
 
 	public Tabuleiro(double[][] tabuleiro) {

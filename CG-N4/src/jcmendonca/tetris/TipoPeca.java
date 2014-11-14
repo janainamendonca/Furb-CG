@@ -1,41 +1,40 @@
 package jcmendonca.tetris;
 
-import java.awt.Color;
 
 public enum TipoPeca {
 
 	T(new double[][] {
 	/**/{ 0, 1, 0 },
-	/**/{ 1, 1, 1 } }, 1, Color.PINK),
+	/**/{ 1, 1, 1 } }, 1, new float[] { 1, 0.6f, 0.6f }), //Pink
 
 	Z(new double[][] {
 	/**/{ 2, 2, 0 },
-	/**/{ 0, 2, 2 } }, 2, Color.RED),
+	/**/{ 0, 2, 2 } }, 2, new float[] { 1, 0, 0 }), //Vermelho
 
 	L(new double[][] {
 	/**/{ 0, 0, 3 },
-	/**/{ 3, 3, 3 } }, 3, Color.BLUE),
+	/**/{ 3, 3, 3 } }, 3, new float[] { 0, 0, 1 }), //azul 
 
 	O(new double[][] {
 	/**/{ 4, 4 },
-	/**/{ 4, 4 } }, 4, Color.YELLOW),
+	/**/{ 4, 4 } }, 4, new float[] { 1, 1, 0 }), //amarelo
 
 	I(new double[][] {
-	/**/{ 5, 5, 5, 5 } }, 5, Color.CYAN),
+	/**/{ 5, 5, 5, 5 } }, 5, new float[] { 0, 1, 1 }), // ciano
 
 	J(new double[][] {
 	/**/{ 6, 0, 0 },
-	/**/{ 6, 6, 6 } }, 6, Color.ORANGE),
+	/**/{ 6, 6, 6 } }, 6, new float[] { 1, 0.7f, 0 }), // laranja
 
 	S(new double[][] {
 	/**/{ 0, 7, 7 },
-	/**/{ 7, 7, 0 } }, 7, Color.GREEN);
+	/**/{ 7, 7, 0 } }, 7, new float[] { 0, 1, 0 }); //verde
 
 	private double[][] matriz;
 	private int id;
-	private Color cor;
+	private float[] cor;
 
-	private TipoPeca(double[][] matriz, int id, Color cor) {
+	private TipoPeca(double[][] matriz, int id, float[] cor) {
 		this.matriz = matriz;
 		this.id = id;
 		this.cor = cor;
@@ -49,7 +48,33 @@ public enum TipoPeca {
 		return id;
 	}
 
-	public Color getCor() {
+	public float[] getCor() {
 		return cor;
+	}
+
+	public static float[] getCorById(double id) {
+
+		switch ((int) id) {
+		case 1:
+			return T.getCor();
+		case 2:
+			return Z.getCor();
+		case 3:
+			return L.getCor();
+		case 4:
+			return O.getCor();
+		case 5:
+			return I.getCor();
+		case 6:
+			return J.getCor();
+		case 7:
+			return S.getCor();
+
+		default:
+			break;
+		}
+
+		return null;
+
 	}
 }

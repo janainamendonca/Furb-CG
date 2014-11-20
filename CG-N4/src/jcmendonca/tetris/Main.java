@@ -149,7 +149,7 @@ public class Main implements GLEventListener, KeyListener {
 
 		//		drawAxis();
 
-		tetris.desenhar(gl, glu, glut, idsTextura);
+		tetris.desenhar(gl, glut, idsTextura);
 		//		tetris.desenhar2(gl, glu, glut);
 
 		gl.glFlush();
@@ -189,12 +189,13 @@ public class Main implements GLEventListener, KeyListener {
 			break;
 		case KeyEvent.VK_1:
 			camera.setEye(new Point(20, 20, 20));
+			glDrawable.display();
 			break;
 		case KeyEvent.VK_2:
 			camera.setEye(new Point(0, 0, 30));
+			glDrawable.display();
 			break;
 		}
-		glDrawable.display();
 	}
 
 	// metodo definido na interface GLEventListener.

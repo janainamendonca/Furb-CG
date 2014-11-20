@@ -49,6 +49,7 @@ public class Tabuleiro {
 	}
 
 	public boolean colocaPeca(Peca peca, int linha, int coluna) {
+		linhasPreenchidas = 0;
 		limpaPecaTemporaria();
 		double[][] matrizPeca = peca.getMatrizAtual();
 		boolean colisao = false;
@@ -60,15 +61,19 @@ public class Tabuleiro {
 
 					tabuleiro[i + linha][j + coluna] = -1;
 
-					if (linha + i == qtdLinhas - 1) {
-						colisao = true; //parou na ultima linha
-					} else {
-
-						if (tabuleiro[i + linha + 1][j] != 0) {
-							colisao = true; //parou 
-						}
-
+					if (!cabePeca(peca.getMatrizAtual(), linha + 1, coluna)) {
+						colisao = true;
 					}
+
+					//					if (linha + i == qtdLinhas - 1) {
+					//						colisao = true; //parou na ultima linha
+					//					} else {
+					//
+					//						if (tabuleiro[i + linha + 1][j] != 0) {
+					//							colisao = true; //parou 
+					//						}
+					//
+					//					}
 
 				}
 			}

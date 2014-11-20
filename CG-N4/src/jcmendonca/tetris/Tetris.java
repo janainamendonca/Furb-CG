@@ -26,8 +26,6 @@ public class Tetris implements KeyListener {
 
 	private int colunaAtual;
 
-	private Main main;
-
 	private float velocidadeJogo;
 
 	private jcmendonca.tetris.Clock logicTimer;
@@ -45,10 +43,12 @@ public class Tetris implements KeyListener {
 	 */
 	private static final long FRAME_TIME = 1000L / 50L;
 
+	private Main renderer;
+
 	public Tetris() {
 
 		//		double[][] matrizTabuleiro = //
-		//		{ // .............0, 1, 2, 3, 4, 5, 6, 7, 8, 9
+		//		{ // 0, 1, 2, 3, 4, 5, 6, 7, 8, 9
 		//		/* .1 */{ 4, 4, 0, 0, 0, 0, 0, 0, 0, 0 },
 		//		/* .2 */{ 4, 4, 0, 0, 0, 0, 0, 0, 0, 0 },
 		//		/* .3 */{ 7, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
@@ -78,7 +78,7 @@ public class Tetris implements KeyListener {
 	}
 
 	public void iniciarJogo(Main main) {
-		this.main = main;
+		this.renderer = main;
 		random = new Random();
 		isNovoJogo = true;
 		//		this.tabuleiro = new Tabuleiro();
@@ -100,7 +100,6 @@ public class Tetris implements KeyListener {
 				main.display();
 			}
 
-
 			/*
 			 * Sleep to cap the framerate.
 			 */
@@ -118,13 +117,11 @@ public class Tetris implements KeyListener {
 
 	private void atualizarJogo() {
 		moveAbaixo();
-		System.out.println("move abaixo");
 	}
 
 	private void resetGame() {
-		this.nivel = 1;
 		this.pontos = 0;
-		this.velocidadeJogo = 1.0f;
+		this.velocidadeJogo = nivel;
 		atualizaProximaPeca();
 		this.isNovoJogo = false;
 		this.isGameOver = false;
@@ -146,13 +143,12 @@ public class Tetris implements KeyListener {
 		atualizaProximaPeca();
 
 		if (!tabuleiro.cabePeca(pecaAtual, linhaAtual, colunaAtual)) {
-			//game over
-			//TODO tratar
+			isGameOver = true;
 			logicTimer.setPaused(true);
 			System.out.println("Game over");
 		} else {
 			System.out.println("nova peça");
-			tabuleiro.colocaPeca(pecaAtual, linhaAtual, colunaAtual);
+			colocaPeca();
 
 		}
 
@@ -190,6 +186,7 @@ public class Tetris implements KeyListener {
 
 	public void moveAbaixo() {
 		if (tabuleiro.cabePeca(pecaAtual, linhaAtual + 1, colunaAtual)) {
+			System.out.println("move abaixo");
 			linhaAtual++;
 			colocaPeca();
 		}
@@ -208,6 +205,11 @@ public class Tetris implements KeyListener {
 
 		if (colisao) {
 
+			int linhasPreenchidas = tabuleiro.getLinhasPreenchidas();
+			if (linhasPreenchidas > 0) {
+				pontos += Math.pow(linhasPreenchidas, 2);
+			}
+
 			System.out.println("Colisão");
 
 			this.velocidadeJogo += 0.035f;
@@ -219,7 +221,7 @@ public class Tetris implements KeyListener {
 		}
 	}
 
-	public void desenhar(GL gl, GLU glu, GLUT glut, IntBuffer idsTextura) {
+	public void desenhar(GL gl, GLUT glut, IntBuffer idsTextura) {
 
 		float[] corGrade = new float[] { 0.7f, 0.7f, 0.7f };
 
@@ -237,36 +239,107 @@ public class Tetris implements KeyListener {
 
 		double[][] matrizTabuleiro = tabuleiro.getMatrizTabuleiro();
 
-		//		desenhaCubo(gl, glut, idsTextura, 5, 5, 2);
-
 		for (int i = 0; i < matrizTabuleiro.length; i++) {
 			for (int j = 0; j < matrizTabuleiro[0].length; j++) {
 
 				double valor = matrizTabuleiro[i][j];
 				if (valor != 0) {
 
-					desenhaCubo(gl, glut, idsTextura, i, j, valor);
+					desenhaCubo(gl, idsTextura, i, j, valor);
 				}
 			}
 		}
 
-	}
+		if (isGameOver) {
+			// avisa que deu game over
 
-	private void desenhaCubo(GL gl, GLUT glut, IntBuffer idsTextura, int i, int j, double valor) {
-		float[] cor = null;
-		int textura = 0;
+			desenhaGameOver(gl, glut);
 
-		if (valor == -1) {
-			cor = pecaAtual.getTipoPeca().getCor();
-			textura = pecaAtual.getTipoPeca().getId() - 1;
 		} else {
-			cor = TipoPeca.getCorById(valor);
-			textura = (int) (valor - 1);
+			// desenha a próxima peça
+			desenhaProximaPeca(gl, idsTextura);
+
 		}
 
-		float x = j - 4.5f;
-		float y = 9.5f - i;
+		// qtd de pontos
+		desenhaQtdPontos(gl, glut);
 
+		//nível do jogo
+
+		String texto = "Nível";
+		gl.glRasterPos3f(10, 3, 2f);
+		desenhaTexto(glut, texto);
+
+		texto = String.valueOf(nivel);
+		gl.glRasterPos3f(11, 1, 2f);
+		desenhaTexto(glut, texto);
+
+		if (isNovoJogo) {
+
+			texto = "Escolha um nível";
+			gl.glRasterPos3f(-10, 0, 3f);
+			desenhaTexto(glut, texto);
+
+			texto = "Pressione Enter para iniciar o jogo";
+			gl.glRasterPos3f(-10, -2, 3f);
+			desenhaTexto(glut, texto);
+
+		}
+	}
+
+	private void desenhaGameOver(GL gl, GLUT glut) {
+		String texto = "Game Over";
+		gl.glRasterPos3f(-3, 0, 3f);
+		desenhaTexto(glut, texto);
+
+		texto = "Pressione Enter para novo jogo";
+		gl.glRasterPos3f(-10, -2, 3f);
+		desenhaTexto(glut, texto);
+	}
+
+	private void desenhaQtdPontos(GL gl, GLUT glut) {
+		String texto = "Pontuação";
+		gl.glRasterPos3f(8, 7, 2f);
+		desenhaTexto(glut, texto);
+
+		texto = String.valueOf(pontos);
+		gl.glRasterPos3f(11, 5, 2f);
+		desenhaTexto(glut, texto);
+	}
+
+	private void desenhaProximaPeca(GL gl, IntBuffer idsTextura) {
+		if (proximaPeca != null) {
+
+			// desenha a próxima peça
+
+			double[][] matrizProximaPeca = proximaPeca.getMatrizAtual();
+
+			for (int i = 0; i < matrizProximaPeca.length; i++) {
+				for (int j = 0; j < matrizProximaPeca[0].length; j++) {
+
+					if (matrizProximaPeca[i][j] != 0) {
+
+						desenhaCubo(gl, idsTextura, j + 10, i + 10, proximaPeca.getTipoPeca().getId() - 1, proximaPeca.getTipoPeca().getCor());
+
+					}
+
+				}
+
+			}
+
+		}
+	}
+
+	private void desenhaTexto(GLUT glut, String texto) {
+		//desenha letra por letra na tela
+		try {
+			for (int i = 0; i < texto.length(); i++)
+				glut.glutBitmapCharacter(GLUT.BITMAP_HELVETICA_18, texto.charAt(i));
+		} catch (Exception e) {
+		}
+	}
+
+	private void desenhaCubo(GL gl, IntBuffer idsTextura, float x, float y, int textura, float[] cor) {
 		gl.glPushMatrix();
 
 		//Transladar 1
@@ -288,6 +361,25 @@ public class Tetris implements KeyListener {
 		gl.glDisable(GL.GL_TEXTURE_2D); //	Desabilita uso de textura
 
 		gl.glPopMatrix();
+	}
+
+	private void desenhaCubo(GL gl, IntBuffer idsTextura, int i, int j, double valor) {
+		float[] cor = null;
+		int textura = 0;
+
+		if (valor == -1) {
+			cor = pecaAtual.getTipoPeca().getCor();
+			textura = pecaAtual.getTipoPeca().getId() - 1;
+		} else {
+			cor = TipoPeca.getCorById(valor);
+			textura = (int) (valor - 1);
+		}
+
+		float x = j - 4.5f;
+		float y = 9.5f - i;
+
+		desenhaCubo(gl, idsTextura, x, y, textura, cor);
+
 	}
 
 	private void gerarCubo(GL gl) {
@@ -431,7 +523,6 @@ public class Tetris implements KeyListener {
 				}
 			}
 		}
-
 	}
 
 	@Override
@@ -458,10 +549,26 @@ public class Tetris implements KeyListener {
 			break;
 
 		case KeyEvent.VK_UP:
-			rotaciona();
+
+			if (isNovoJogo) {
+				if (nivel < 10) {
+					nivel++;
+					renderer.display();
+				}
+			} else {
+				rotaciona();
+			}
+
 			break;
 		case KeyEvent.VK_DOWN:
-			moveAbaixo();
+			if (isNovoJogo) {
+				if (nivel > 1) {
+					nivel--;
+					renderer.display();
+				}
+			} else {
+				moveAbaixo();
+			}
 		default:
 			break;
 		}

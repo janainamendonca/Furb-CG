@@ -47,35 +47,7 @@ public class Tetris implements KeyListener {
 	private Main renderer;
 
 	public Tetris() {
-
-		//		double[][] matrizTabuleiro = //
-		//		{ // 0, 1, 2, 3, 4, 5, 6, 7, 8, 9
-		//		/* .1 */{ 4, 4, 0, 0, 0, 0, 0, 0, 0, 0 },
-		//		/* .2 */{ 4, 4, 0, 0, 0, 0, 0, 0, 0, 0 },
-		//		/* .3 */{ 7, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-		//		/* .4 */{ 7, 7, 0, 0, 0, 0, 0, 0, 0, 0 },
-		//		/* .5 */{ 6, 7, 0, 0, 0, 0, 0, 0, 0, 0 },
-		//		/* .6 */{ 6, 6, 6, 0, 0, 0, 0, 0, 0, 0 },
-		//		/* .7 */{ 5, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-		//		/* .8 */{ 5, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-		//		/* .9 */{ 5, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-		//		/* 10 */{ 5, 7, 7, 0, 0, 0, 0, 0, 0, 0 },
-		//		/* 11 */{ 7, 7, 0, 0, 0, 0, 0, 0, 0, 0 },
-		//		/* 12 */{ 3, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-		//		/* 13 */{ 3, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-		//		/* 14 */{ 3, 3, 0, 0, 0, 0, 0, 0, 0, 0 },
-		//		/* 15 */{ 1, 1, 1, 0, 0, 0, 0, 0, 0, 0 },
-		//		/* 16 */{ 5, 1, 7, 7, 0, 0, 0, 0, 0, 0 },
-		//		/* 17 */{ 5, 7, 7, 6, 0, 0, 5, 5, 5, 5 },
-		//		/* 18 */{ 5, 6, 6, 6, 0, 4, 4, 0, 0, 0 },
-		//		/* 19 */{ 5, 1, 2, 2, 0, 4, 4, 3, 4, 4 },
-		//		/* 20 */{ 1, 1, 1, 2, 2, 3, 3, 3, 4, 4 } //
-		//
-		//		};
-		//
-		//		this.tabuleiro = new Tabuleiro(matrizTabuleiro);
 		tabuleiro = new Tabuleiro();
-
 	}
 
 	public void iniciarJogo(Main main) {
@@ -314,8 +286,7 @@ public class Tetris implements KeyListener {
 
 			double[][] matrizProximaPeca = proximaPeca.getMatrizAtual();
 
-			if (proximaPeca.getTipoPeca() == TipoPeca.T || proximaPeca.getTipoPeca() == TipoPeca.J) {
-
+			if (proximaPeca.getTipoPeca() == TipoPeca.T) {
 				matrizProximaPeca = proximaPeca.getMatrizRotacao();
 				matrizProximaPeca = new Matrix(matrizProximaPeca).transpose().getArray();
 				matrizProximaPeca = Peca.reflect(matrizProximaPeca);
@@ -324,7 +295,10 @@ public class Tetris implements KeyListener {
 			} else if (proximaPeca.getTipoPeca() == TipoPeca.L) {
 				matrizProximaPeca = proximaPeca.getMatrizRotacao();
 				matrizProximaPeca = new Matrix(matrizProximaPeca).transpose().getArray();
-				//				matrizProximaPeca = Peca.reflect(matrizProximaPeca);
+			} else if (proximaPeca.getTipoPeca() == TipoPeca.J) {
+				matrizProximaPeca = proximaPeca.getMatrizRotacao();
+				matrizProximaPeca = new Matrix(matrizProximaPeca).transpose().getArray();
+				Peca.reflect(matrizProximaPeca);
 			}
 
 			int textura = proximaPeca.getTipoPeca().getId() - 1;

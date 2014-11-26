@@ -1,34 +1,33 @@
 package jcmendonca.tetris;
 
-
 public enum TipoPeca {
 
 	T(new double[][] {
 	/**/{ 0, 1, 0 },
-	/**/{ 1, 1, 1 } }, 1, new float[] { 1, 0.6f, 0.6f }), //Pink
+	/**/{ 1, 1, 1 } }, 1, new float[] { 1, 0.6f, 0.6f }), //
 
 	Z(new double[][] {
 	/**/{ 2, 2, 0 },
-	/**/{ 0, 2, 2 } }, 2, new float[] { 1, 0, 0 }), //Vermelho
+	/**/{ 0, 2, 2 } }, 2, new float[] { 1, 0, 0 }), //
 
 	L(new double[][] {
 	/**/{ 0, 0, 3 },
-	/**/{ 3, 3, 3 } }, 3, new float[] { 0, 0, 1 }), //azul 
+	/**/{ 3, 3, 3 } }, 3, new float[] { 0, 0, 1 }), //
 
 	O(new double[][] {
 	/**/{ 4, 4 },
-	/**/{ 4, 4 } }, 4, new float[] { 1, 1, 0 }), //amarelo
+	/**/{ 4, 4 } }, 4, new float[] { 1, 1, 0 }), //
 
 	I(new double[][] {
-	/**/{ 5, 5, 5, 5 } }, 5, new float[] { 0, 1, 1 }), // ciano
+	/**/{ 5, 5, 5, 5 } }, 5, new float[] { 0, 1, 1 }), // 
 
 	J(new double[][] {
 	/**/{ 6, 0, 0 },
-	/**/{ 6, 6, 6 } }, 6, new float[] { 1, 0.7f, 0 }), // laranja
+	/**/{ 6, 6, 6 } }, 6, new float[] { 1, 0.7f, 0 }), // 
 
 	S(new double[][] {
 	/**/{ 0, 7, 7 },
-	/**/{ 7, 7, 0 } }, 7, new float[] { 0, 1, 0 }); //verde
+	/**/{ 7, 7, 0 } }, 7, new float[] { 0, 1, 0 }); //
 
 	private double[][] matriz;
 	private int id;

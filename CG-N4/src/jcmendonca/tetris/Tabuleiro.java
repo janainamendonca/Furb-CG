@@ -65,16 +65,6 @@ public class Tabuleiro {
 						colisao = true;
 					}
 
-					//					if (linha + i == qtdLinhas - 1) {
-					//						colisao = true; //parou na ultima linha
-					//					} else {
-					//
-					//						if (tabuleiro[i + linha + 1][j] != 0) {
-					//							colisao = true; //parou 
-					//						}
-					//
-					//					}
-
 				}
 			}
 		}

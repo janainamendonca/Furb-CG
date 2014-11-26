@@ -28,12 +28,12 @@ public class Peca {
 
 		return reflect(new Matrix(matrizAtual).transpose().getArray());
 	}
-	
+
 	public double[][] getMatrizAtual() {
 		return matrizAtual;
 	}
 
-	private static double[][] reflect(double[][] a) {
+	public static double[][] reflect(double[][] a) {
 		double[][] b = new double[a.length][a[0].length];
 
 		for (int i = 0; i < a.length; i++) {

@@ -9,6 +9,7 @@ import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 
 import jcmendonca.common.Transform;
+import Jama.Matrix;
 
 import com.sun.opengl.util.GLUT;
 
@@ -30,7 +31,7 @@ public class Tetris implements KeyListener {
 
 	private jcmendonca.tetris.Clock logicTimer;
 
-	private int nivel;
+	private int nivel = 1;
 
 	private int pontos;
 
@@ -81,7 +82,6 @@ public class Tetris implements KeyListener {
 		this.renderer = main;
 		random = new Random();
 		isNovoJogo = true;
-		//		this.tabuleiro = new Tabuleiro();
 		this.velocidadeJogo = 1.0f;
 
 		// Timer do jogo, fica pausado até o usuário pressionar enter
@@ -314,12 +314,27 @@ public class Tetris implements KeyListener {
 
 			double[][] matrizProximaPeca = proximaPeca.getMatrizAtual();
 
+			if (proximaPeca.getTipoPeca() == TipoPeca.T || proximaPeca.getTipoPeca() == TipoPeca.J) {
+
+				matrizProximaPeca = proximaPeca.getMatrizRotacao();
+				matrizProximaPeca = new Matrix(matrizProximaPeca).transpose().getArray();
+				matrizProximaPeca = Peca.reflect(matrizProximaPeca);
+			} else if (proximaPeca.getTipoPeca() == TipoPeca.Z || proximaPeca.getTipoPeca() == TipoPeca.S) {
+				matrizProximaPeca = Peca.reflect(matrizProximaPeca);
+			} else if (proximaPeca.getTipoPeca() == TipoPeca.L) {
+				matrizProximaPeca = proximaPeca.getMatrizRotacao();
+				matrizProximaPeca = new Matrix(matrizProximaPeca).transpose().getArray();
+				//				matrizProximaPeca = Peca.reflect(matrizProximaPeca);
+			}
+
+			int textura = proximaPeca.getTipoPeca().getId() - 1;
+
 			for (int i = 0; i < matrizProximaPeca.length; i++) {
 				for (int j = 0; j < matrizProximaPeca[0].length; j++) {
 
 					if (matrizProximaPeca[i][j] != 0) {
 
-						desenhaCubo(gl, idsTextura, j + 10, i + 10, proximaPeca.getTipoPeca().getId() - 1, proximaPeca.getTipoPeca().getCor());
+						desenhaCubo(gl, idsTextura, j + 10, i + 10, textura, proximaPeca.getTipoPeca().getCor());
 
 					}
 
@@ -353,7 +368,7 @@ public class Tetris implements KeyListener {
 		gl.glMaterialfv(GL.GL_FRONT, GL.GL_AMBIENT_AND_DIFFUSE, cor, 0);
 		gl.glColor3f(1f, 1f, 1f);
 
-		gl.glBindTexture(GL.GL_TEXTURE_2D, idsTextura.get(textura)); //Posiciona na Textura Caixa de Madeira
+		gl.glBindTexture(GL.GL_TEXTURE_2D, idsTextura.get(textura));
 		gl.glEnable(GL.GL_TEXTURE_2D); // Habilita uso de textura
 
 		gerarCubo(gl);

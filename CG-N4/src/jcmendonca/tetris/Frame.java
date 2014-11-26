@@ -9,18 +9,16 @@ import javax.media.opengl.GLCapabilities;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
-import com.sun.opengl.util.Animator;
-
 public class Frame extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private Main renderer = new Main();
-	private Animator animator;
 
 	public Frame() {
 		// Cria o frame.
-		super("CG-N3_Trasnformacao");
-		setBounds(50, 100, 500, 600);
+		super("CG-N4 Tetris");
+		setBounds(50, 100, 600, 700);
+		setResizable(false);
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		getContentPane().setLayout(new BorderLayout());
 
@@ -43,7 +41,6 @@ public class Frame extends JFrame {
 		canvas.addKeyListener(renderer.tetris);
 		canvas.requestFocus();
 
-		//		animator = new Animator(canvas);
 		//
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
@@ -56,7 +53,6 @@ public class Frame extends JFrame {
 	public static void main(String[] args) {
 		Frame frame = new Frame();
 		frame.setVisible(true);
-		//		frame.animator.start();
 		frame.renderer.iniciaJogo();
 	}
 

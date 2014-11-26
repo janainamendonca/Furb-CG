@@ -147,8 +147,6 @@ public class Main implements GLEventListener, KeyListener {
 
 		glu.gluLookAt(eye.getX(), eye.getY(), eye.getZ(), center.getX(), center.getY(), center.getZ(), up.getX(), up.getY(), up.getZ());
 
-		//		drawAxis();
-
 		tetris.desenhar(gl, glut, idsTextura);
 		//		tetris.desenhar2(gl, glu, glut);
 

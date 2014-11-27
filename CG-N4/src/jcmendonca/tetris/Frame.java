@@ -12,7 +12,7 @@ import javax.swing.WindowConstants;
 public class Frame extends JFrame {
 
 	private static final long serialVersionUID = 1L;
-	private Main renderer = new Main();
+	private Renderizador renderer = new Renderizador();
 
 	public Frame() {
 		// Cria o frame.

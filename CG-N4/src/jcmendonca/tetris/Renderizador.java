@@ -21,7 +21,7 @@ import com.sun.opengl.util.BufferUtil;
 import com.sun.opengl.util.GLUT;
 import com.sun.opengl.util.texture.TextureData;
 
-public class Main implements GLEventListener, KeyListener {
+public class Renderizador implements GLEventListener, KeyListener {
 
 	/**/
 	private GL gl;

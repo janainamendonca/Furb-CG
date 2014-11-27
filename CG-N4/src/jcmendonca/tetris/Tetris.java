@@ -41,13 +41,13 @@ public class Tetris implements KeyListener {
 
 	private static final long FRAME_TIME = 1000L / 50L;
 
-	private Main renderer;
+	private Renderizador renderer;
 
 	public Tetris() {
 		tabuleiro = new Tabuleiro();
 	}
 
-	public void iniciarJogo(Main main) {
+	public void iniciarJogo(Renderizador main) {
 		this.renderer = main;
 		random = new Random();
 		isNovoJogo = true;

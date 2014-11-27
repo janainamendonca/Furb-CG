@@ -29,7 +29,7 @@ public class Tetris implements KeyListener {
 
 	private float velocidadeJogo;
 
-	private jcmendonca.tetris.Clock logicTimer;
+	private jcmendonca.tetris.Timer logicTimer;
 
 	private int nivel = 1;
 
@@ -39,9 +39,6 @@ public class Tetris implements KeyListener {
 
 	private boolean isGameOver;
 
-	/**
-	 * The number of milliseconds per frame.
-	 */
 	private static final long FRAME_TIME = 1000L / 50L;
 
 	private Main renderer;
@@ -57,38 +54,24 @@ public class Tetris implements KeyListener {
 		this.velocidadeJogo = 1.0f;
 
 		// Timer do jogo, fica pausado até o usuário pressionar enter
-		this.logicTimer = new Clock(velocidadeJogo);
+		this.logicTimer = new Timer(velocidadeJogo);
 		logicTimer.setPaused(true);
 
 		while (true) {
-			long inicio = System.nanoTime();
+			long inicio = System.currentTimeMillis();
 
 			// atualiza o tempo
 			logicTimer.update();
 
-			// se passou o tempo da velocidade do jogo, a peça atual pode ser movida para baixo.
+			// se terminou um ciclo no timer, a peça atual pode ser movida para baixo.
 			if (logicTimer.hasElapsedCycle()) {
-				atualizarJogo();
+				moveAbaixo();
 				main.display();
 			}
 
-			/*
-			 * Sleep to cap the framerate.
-			 */
-			long delta = (System.nanoTime() - inicio) / 1000000L;
-			if (delta < FRAME_TIME) {
-				try {
-					Thread.sleep(FRAME_TIME - delta);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
+			sleep(inicio);
 
 		}
-	}
-
-	private void atualizarJogo() {
-		moveAbaixo();
 	}
 
 	private void resetGame() {
@@ -558,6 +541,10 @@ public class Tetris implements KeyListener {
 			} else {
 				moveAbaixo();
 			}
+			break;
+		case KeyEvent.VK_P:
+			logicTimer.setPaused(!logicTimer.isPaused());
+			break;
 		default:
 			break;
 		}
@@ -568,4 +555,15 @@ public class Tetris implements KeyListener {
 
 	}
 
+	private void sleep(long inicio) {
+		long delta = (System.currentTimeMillis() - inicio);
+		if (delta < FRAME_TIME) {
+			try {
+
+				Thread.sleep(FRAME_TIME - delta);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
 }

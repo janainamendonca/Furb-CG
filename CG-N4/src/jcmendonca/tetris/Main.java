@@ -46,6 +46,7 @@ public class Main implements GLEventListener, KeyListener {
 	/**/
 	Tetris tetris = new Tetris();
 	private Camera camera;
+	private Point pontoOlhoCamera = new Point(0, 0, 30);
 
 	public void init(GLAutoDrawable drawable) {
 		glDrawable = drawable;
@@ -56,9 +57,9 @@ public class Main implements GLEventListener, KeyListener {
 
 		gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-		camera = new Camera(-200.0f, 200.0f, -300.0f, 300.0f);
-		camera.setEye(new Point(0, 0, 30));
-		camera.setCenter(new Point());
+		camera = new Camera();
+		camera.setEye(pontoOlhoCamera);
+		camera.setCenter(new Point(0, 0, 0));
 
 		float posLight[] = { 5.0f, 5.0f, 10.0f, 0.0f };
 		gl.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION, posLight, 0);
@@ -148,31 +149,9 @@ public class Main implements GLEventListener, KeyListener {
 		glu.gluLookAt(eye.getX(), eye.getY(), eye.getZ(), center.getX(), center.getY(), center.getZ(), up.getX(), up.getY(), up.getZ());
 
 		tetris.desenhar(gl, glut, idsTextura);
-		//		tetris.desenhar2(gl, glu, glut);
 
 		gl.glFlush();
 		System.out.println("Fim desenho...");
-	}
-
-	public void drawAxis() {
-		// eixo X - Red
-		gl.glColor3f(1.0f, 0.0f, 0.0f);
-		gl.glBegin(GL.GL_LINES);
-		gl.glVertex3f(0.0f, 0.0f, 0.0f);
-		gl.glVertex3f(10.0f, 0.0f, 0.0f);
-		gl.glEnd();
-		// eixo Y - Green
-		gl.glColor3f(0.0f, 1.0f, 0.0f);
-		gl.glBegin(GL.GL_LINES);
-		gl.glVertex3f(0.0f, 0.0f, 0.0f);
-		gl.glVertex3f(0.0f, 10.0f, 0.0f);
-		gl.glEnd();
-		// eixo Z - Blue
-		gl.glColor3f(0.0f, 0.0f, 1.0f);
-		gl.glBegin(GL.GL_LINES);
-		gl.glVertex3f(0.0f, 0.0f, 0.0f);
-		gl.glVertex3f(0.0f, 0.0f, 10.0f);
-		gl.glEnd();
 	}
 
 	public void iniciaJogo() {
@@ -190,29 +169,19 @@ public class Main implements GLEventListener, KeyListener {
 			glDrawable.display();
 			break;
 		case KeyEvent.VK_2:
-			camera.setEye(new Point(0, 0, 30));
+			camera.setEye(pontoOlhoCamera);
 			glDrawable.display();
 			break;
 		}
 	}
 
-	// metodo definido na interface GLEventListener.
-	// "render" feito quando o modo ou dispositivo de exibicao associado foi
-	// alterado.
 	public void displayChanged(GLAutoDrawable arg0, boolean arg1, boolean arg2) {
-		// System.out.println(" --- displayChanged ---");
 	}
 
-	/*
-	 * M�todos n�o implementados
-	 */
-
 	public void keyReleased(KeyEvent arg0) {
-		// System.out.println(" --- keyReleased ---");
 	}
 
 	public void keyTyped(KeyEvent arg0) {
-		// System.out.println(" --- keyTyped ---");
 	}
 
 }

@@ -29,7 +29,7 @@ public class Tetris implements KeyListener {
 
 	private float velocidadeJogo;
 
-	private jcmendonca.tetris.Timer logicTimer;
+	private Timer timer;
 
 	private int nivel = 1;
 
@@ -54,17 +54,17 @@ public class Tetris implements KeyListener {
 		this.velocidadeJogo = 1.0f;
 
 		// Timer do jogo, fica pausado até o usuário pressionar enter
-		this.logicTimer = new Timer(velocidadeJogo);
-		logicTimer.setPaused(true);
+		this.timer = new Timer(velocidadeJogo);
+		timer.setPaused(true);
 
 		while (true) {
 			long inicio = System.currentTimeMillis();
 
 			// atualiza o tempo
-			logicTimer.update();
+			timer.update();
 
 			// se terminou um ciclo no timer, a peça atual pode ser movida para baixo.
-			if (logicTimer.hasElapsedCycle()) {
+			if (timer.hasElapsedCycle()) {
 				moveAbaixo();
 				main.display();
 			}
@@ -81,8 +81,8 @@ public class Tetris implements KeyListener {
 		this.isNovoJogo = false;
 		this.isGameOver = false;
 		tabuleiro = new Tabuleiro();
-		logicTimer.reset();
-		logicTimer.setCyclesPerSecond(velocidadeJogo);
+		timer.reset();
+		timer.setCyclesPerSecond(velocidadeJogo);
 
 		linhaAtual = 0;
 		colunaAtual = 4;
@@ -99,7 +99,7 @@ public class Tetris implements KeyListener {
 
 		if (!tabuleiro.cabePeca(pecaAtual, linhaAtual, colunaAtual)) {
 			isGameOver = true;
-			logicTimer.setPaused(true);
+			timer.setPaused(true);
 			System.out.println("Game over");
 		} else {
 			System.out.println("nova peça");
@@ -168,9 +168,9 @@ public class Tetris implements KeyListener {
 			System.out.println("Colisão");
 
 			this.velocidadeJogo += 0.035f;
-			logicTimer.setCyclesPerSecond(velocidadeJogo);
+			timer.setCyclesPerSecond(velocidadeJogo);
 
-			logicTimer.reset();
+			timer.reset();
 
 			insereNovaPeca();
 		}
@@ -543,7 +543,7 @@ public class Tetris implements KeyListener {
 			}
 			break;
 		case KeyEvent.VK_P:
-			logicTimer.setPaused(!logicTimer.isPaused());
+			timer.setPaused(!timer.isPaused());
 			break;
 		default:
 			break;
